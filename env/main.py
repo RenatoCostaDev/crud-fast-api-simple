@@ -1,10 +1,32 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
 from typing import Optional
 from pydantic import BaseModel
 from tools import get_person, remove_person, calcular_imc, add_attribute_first
 
 
-data_people = []
+data_people =[
+  {
+    "id": 1,
+    "name": "Renato1",
+    "weight": 83,
+    "height": 1.76,
+    "imc": 26.79
+  },
+  {
+    "id": 2,
+    "name": "Renato2",
+    "weight": 83,
+    "height": 1.76,
+    "imc": 26.79
+  },
+  {
+    "id": 3,
+    "name": "Renato3",
+    "weight": 83,
+    "height": 1.76,
+    "imc": 26.79
+  }
+]
 
 app = FastAPI()
 
@@ -21,7 +43,7 @@ async def get_people():
     return data_people
 
 @app.get("/people/{person_id}")
-async def read_item(person_id: int):
+async def read_people(person_id: int):
     data = get_person(person_id, data_people)
     return data
 
@@ -36,3 +58,23 @@ async def create_person(person: Person):
     data_people.append(person_dict)
     
     return person_dict
+
+
+@app.post("/people-update/{person_id}")
+async def update_people(person_id: int, person: Person):
+    data = get_person(person_id, data_people)
+    data['name'] = person.name
+    data['weight'] = person.weight
+    data['height'] = person.height
+    # Atualizando imc
+    person_imc = calcular_imc(person.weight, person.height)
+    data['imc'] = person_imc
+    
+    return data
+
+
+@app.delete("/people-delete/{person_id}")
+async def delete_people(person_id: int):
+    
+    data = remove_person(person_id, data_people)
+    return data
