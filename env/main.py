@@ -4,29 +4,7 @@ from pydantic import BaseModel
 from tools import get_person, remove_person, calcular_imc, add_attribute_first
 
 
-data_people =[
-  {
-    "id": 1,
-    "name": "Renato1",
-    "weight": 83,
-    "height": 1.76,
-    "imc": 26.79
-  },
-  {
-    "id": 2,
-    "name": "Renato2",
-    "weight": 83,
-    "height": 1.76,
-    "imc": 26.79
-  },
-  {
-    "id": 3,
-    "name": "Renato3",
-    "weight": 83,
-    "height": 1.76,
-    "imc": 26.79
-  }
-]
+data_people =[]
 
 app = FastAPI()
 
@@ -60,7 +38,7 @@ async def create_person(person: Person):
     return person_dict
 
 
-@app.post("/people-update/{person_id}")
+@app.put("/people-update/{person_id}")
 async def update_people(person_id: int, person: Person):
     data = get_person(person_id, data_people)
     data['name'] = person.name
